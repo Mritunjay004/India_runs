@@ -11,6 +11,7 @@ the 5-minute budget. Deploy to Streamlit Cloud or HuggingFace Spaces.
 
 import io
 import json
+import os
 
 import pandas as pd
 import streamlit as st
@@ -69,11 +70,21 @@ with st.expander("Backend / how it works"):
         "location, product-vs-services, consulting/job-hop/vision penalties, honeypot kill)."
     )
 
-upload = st.file_uploader("Candidate file (.jsonl or .json)", type=["jsonl", "json", "txt"])
-top_n = st.slider("Show top N", 1, 100, 20)
+DEMO_PATH = os.path.join(os.path.dirname(__file__), "examples", "demo_candidates.jsonl")
 
+upload = st.file_uploader("Candidate file (.jsonl or .json)", type=["jsonl", "json", "txt"])
+col1, col2 = st.columns([1, 3])
+use_demo = col1.button("▶ Load bundled demo (50 candidates)")
+top_n = col2.slider("Show top N", 1, 100, 20)
+
+candidates = None
 if upload is not None:
     candidates = parse_upload(upload.read())[:100]
+elif use_demo and os.path.exists(DEMO_PATH):
+    with open(DEMO_PATH, "rb") as f:
+        candidates = parse_upload(f.read())[:100]
+
+if candidates:
     st.write(f"Ranking **{len(candidates)}** candidates…")
     df = rank_candidates(candidates)
     st.dataframe(df.head(top_n), use_container_width=True)
@@ -82,5 +93,5 @@ if upload is not None:
     st.download_button("Download ranked CSV", buf.getvalue(),
                        file_name="submission.csv", mime="text/csv")
 else:
-    st.info("Upload a candidate sample to begin. "
-            "The repo's artifacts/sample.jsonl (50 candidates) works as a demo input.")
+    st.info("Click **Load bundled demo** to rank the 50-candidate sample shipped in "
+            "examples/demo_candidates.jsonl, or upload your own JSONL / JSON array (≤100).")
