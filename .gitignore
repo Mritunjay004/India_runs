@@ -1,0 +1,16 @@
+# Large data / artifacts — reproduced via documented commands, not committed
+candidates.jsonl
+candidates.jsonl.gz
+artifacts/*.npz
+artifacts/*.jsonl
+artifacts/*.log
+*.csv
+!sample_submission_reference.csv
+*.xlsx
+
+__pycache__/
+*.pyc
+.venv/
+venv/
+.DS_Store
+.pytest_cache/

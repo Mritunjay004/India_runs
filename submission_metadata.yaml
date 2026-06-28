@@ -1,0 +1,83 @@
+# Redrob Hackathon — Submission Metadata
+# Fill in the IDENTITY fields (marked TODO) before submitting via the portal.
+# Technical fields below are accurate for this repository.
+
+# ============================================================================
+# Team identity  (solo participation — teams of up to 4 are allowed; this is solo)
+# ============================================================================
+team_name: "Mritunjay Gupta" # solo entry; rename if you prefer a team handle
+
+primary_contact:
+  name: "Mritunjay Gupta"
+  email: "mritunjaygupta004@gmail.com"
+  phone: "+91-8368247602"
+
+team_members:
+  - name: "Mritunjay Gupta"
+    email: "mritunjaygupta004@gmail.com"
+    role: "Solo participant — ML Engineer"
+
+# ============================================================================
+# Code and reproducibility
+# ============================================================================
+github_repo: "https://github.com/Mritunjay004/redrob-ranker"
+
+sandbox_link: "https://huggingface.co/spaces/Mritunjay004/redrob-ranker"
+# Streamlit app.py in this repo is the sandbox; deploy to Streamlit Cloud or HF Spaces.
+
+reproduce_command: "python rank.py --candidates ./candidates.jsonl --out ./submission.csv"
+# Note: run `python precompute_embeddings.py --candidates ./candidates.jsonl` ONCE first
+# (offline pre-computation, ~15 min). The ranking step above then runs in <5 min on CPU.
+
+# ============================================================================
+# Compute environment
+# ============================================================================
+compute:
+  platform: "MacBook Pro (Apple Silicon)"
+  cpu_cores: 10
+  ram_gb: 16
+  python_version: "3.12.0"
+  os: "macOS (Darwin 25.5.0)"
+  uses_gpu_for_inference: false
+  has_network_during_ranking: false
+  pre_computation_required: true
+  pre_computation_time_minutes: 15 # one-time sentence-transformers embedding of 100K profiles
+
+# ============================================================================
+# AI tools declaration  (transparency only — honest)
+# ============================================================================
+ai_tools_used:
+  - "Claude"
+
+ai_usage_summary: |
+  Used Claude (Claude Code) as a pair-programming assistant for data analysis,
+  architecture discussion, code review, and drafting docs/tests. All design
+  decisions, the scoring model, the honeypot signatures, and the weights were
+  reviewed and owned by the team. No candidate data was sent to any hosted LLM
+  during ranking — the ranking step is fully local, CPU-only, and offline.
+
+# ============================================================================
+# Approach summary
+# ============================================================================
+methodology_summary: |
+  Hybrid ranker: a precomputed CPU sentence-transformer (all-MiniLM-L6-v2) gives a
+  semantic fit between each candidate's career narrative and a JD-intent query;
+  an explicit additive base (semantic, career-substance, trust-weighted skills,
+  experience band, evaluation rigor, education) is then passed through
+  multiplicative gates — role-credibility (anti-keyword-stuffer), behavioral
+  availability, location, product-vs-services, consulting/job-hopping/vision
+  penalties, and a honeypot impossibility kill-factor. The additive part rates how
+  good a real engineer is; the gates decide whether we believe it and can act on it.
+  Honeypots are caught via three disjoint self-contradiction signatures (catching
+  ~70/80 with no false positives). Ranking runs offline in <5 min on CPU. Reasoning
+  strings are generated only from facts present in each candidate record.
+
+# ============================================================================
+# Declarations
+# ============================================================================
+declarations:
+  read_submission_spec: true
+  code_is_original_work: true
+  no_collusion: true
+  honeypot_check_done: true
+  reproduction_tested: true

@@ -1,0 +1,10 @@
+# Core ranking dependencies (the <=5-min, CPU-only ranking step)
+numpy>=1.24
+
+# Semantic embedding backend (primary path). Pulls in torch (CPU build is fine).
+# If this is omitted/unavailable, the ranker degrades gracefully to a built-in
+# hashing vectorizer and still runs — see ranker/embeddings.py.
+sentence-transformers>=2.2
+
+# Sandbox demo app (app.py) only — not needed for the ranking step itself.
+streamlit>=1.30
